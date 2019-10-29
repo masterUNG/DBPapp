@@ -21,12 +21,91 @@ class _StoreState extends State<Store> {
   UserModel userModel;
 
   // Method
+  void closeDrawer() {
+    Navigator.of(context).pop();
+  }
+
   @override
   void initState() {
     super.initState();
     _userAccountModel = widget.userAccountModel;
     print('userLogin = ${_userAccountModel.user}');
     findNameLogin();
+  }
+
+  Widget menuCenterStore() {
+    return ListTile(
+      leading: Icon(
+        Icons.extension,
+        size: 36.0,
+        color: Colors.blue[600],
+      ),
+      title: Text('คลังกลาง'),
+      subtitle: Text('คำอธิบาย คลังกลาง ว่าคือ อะไร ?'),
+      onTap: () {
+        closeDrawer();
+      },
+    );
+  }
+
+  Widget menuElectricStore() {
+    return ListTile(
+      leading: Icon(
+        Icons.flash_on,
+        size: 36.0,
+        color: Colors.red[600],
+      ),
+      title: Text('คลังไฟฟ้า'),
+      subtitle: Text('คำอธิบาย คลังไฟฟ้า ว่าคือ อะไร ?'),
+      onTap: () {
+        closeDrawer();
+      },
+    );
+  }
+
+  Widget menuMachineStore() {
+    return ListTile(
+      leading: Icon(
+        Icons.settings,
+        size: 36.0,
+        color: Colors.purple[600],
+      ),
+      title: Text('คลังเคลื่องกล'),
+      subtitle: Text('คำอธิบาย คลังเคลื่องกล ว่าคือ อะไร ?'),
+      onTap: () {
+        closeDrawer();
+      },
+    );
+  }
+
+  Widget menuPasswordStore() {
+    return ListTile(
+      leading: Icon(
+        Icons.lock,
+        size: 36.0,
+        color: Colors.green[600],
+      ),
+      title: Text('เปลี่ยน รหัส'),
+      subtitle: Text('คำอธิบาย เปลี่ยน รหัส ว่าคือ อะไร ?'),
+      onTap: () {
+        closeDrawer();
+      },
+    );
+  }
+
+  Widget menuLogOutStore() {
+    return ListTile(
+      leading: Icon(
+        Icons.exit_to_app,
+        size: 36.0,
+        color: Colors.deepOrange[600],
+      ),
+      title: Text('Log Out'),
+      subtitle: Text('คำอธิบาย Log Out ว่าคือ อะไร ?'),
+      onTap: () {
+        closeDrawer();
+      },
+    );
   }
 
   Future<void> findNameLogin() async {
@@ -44,19 +123,41 @@ class _StoreState extends State<Store> {
   }
 
   Widget showLogin() {
-    return Text('Login by $loginString');
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Login by $loginString',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
   }
 
   Widget showAvatar() {
-    return Container(
-      width: 100.0,
-      height: 100.0,
-      child: Image.asset('images/avatar.png'),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          width: 100.0,
+          height: 100.0,
+          child: Image.asset('images/avatar.png'),
+        ),
+      ],
     );
   }
 
   Widget showHeadDrawer() {
     return DrawerHeader(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('images/bg1.jpg'),
+          fit: BoxFit.cover,
+        ),
+      ),
       child: Column(
         children: <Widget>[
           showAvatar(),
@@ -71,6 +172,15 @@ class _StoreState extends State<Store> {
       child: ListView(
         children: <Widget>[
           showHeadDrawer(),
+          menuCenterStore(),
+          Divider(),
+          menuElectricStore(),
+          Divider(),
+          menuMachineStore(),
+          Divider(),
+          menuPasswordStore(),
+          Divider(),
+          menuLogOutStore(),
         ],
       ),
     );
