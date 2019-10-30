@@ -1,4 +1,5 @@
 import 'package:dbpapp/screens/my_style.dart';
+import 'package:dbpapp/screens/search_view_material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,7 +9,6 @@ class MyMaterial extends StatefulWidget {
 }
 
 class _MyMaterialState extends State<MyMaterial> {
-
   // Explicit
   List<String> iconMaterials = [
     'images/matcenter.png',
@@ -30,10 +30,9 @@ class _MyMaterialState extends State<MyMaterial> {
 
   int indexMaterial = 0;
 
-
   // MethodCall
 
-   Widget cardMenu1() {
+  Widget cardMenu1() {
     return Card(
       child: ListTile(
         leading: Container(
@@ -48,6 +47,11 @@ class _MyMaterialState extends State<MyMaterial> {
             fontSize: MyStyle().h2,
           ),
         ),
+        onTap: () {
+          MaterialPageRoute materialPageRoute = MaterialPageRoute(
+              builder: (BuildContext context) => SearchViewMaterial());
+              Navigator.of(context).push(materialPageRoute);
+        },
       ),
     );
   }
@@ -89,6 +93,7 @@ class _MyMaterialState extends State<MyMaterial> {
       ),
     );
   }
+
   Widget content() {
     return Container(
       padding: EdgeInsets.only(
@@ -112,7 +117,6 @@ class _MyMaterialState extends State<MyMaterial> {
       ),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
