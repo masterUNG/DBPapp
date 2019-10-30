@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:dbpapp/models/user_account_model.dart';
 import 'package:dbpapp/models/user_model.dart';
 import 'package:dbpapp/screens/main_store.dart';
+import 'package:dbpapp/screens/my_electric.dart';
+import 'package:dbpapp/screens/my_machine.dart';
+import 'package:dbpapp/screens/my_material.dart';
 import 'package:dbpapp/screens/my_style.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -22,7 +25,7 @@ class _StoreState extends State<Store> {
   UserModel userModel;
   List<String> titleAppBars = ['คลังกลาง', 'คลังไฟฟ้า', 'คลังเคลื่องกล'];
   int indexTitleAppBar = 0;
-  Widget currentWidget = MainStore();
+  Widget currentWidget = MyMaterial();
 
   // Method
   void closeDrawer() {
@@ -49,6 +52,7 @@ class _StoreState extends State<Store> {
       onTap: () {
         setState(() {
           indexTitleAppBar = 0;
+          currentWidget = MyMaterial();
         });
         closeDrawer();
       },
@@ -67,6 +71,7 @@ class _StoreState extends State<Store> {
       onTap: () {
         setState(() {
           indexTitleAppBar = 1;
+          currentWidget = MyElectric();
         });
         closeDrawer();
       },
@@ -85,6 +90,7 @@ class _StoreState extends State<Store> {
       onTap: () {
         setState(() {
           indexTitleAppBar = 2;
+          currentWidget = MyMachine();
         });
         closeDrawer();
       },

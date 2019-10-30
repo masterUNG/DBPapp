@@ -1,15 +1,14 @@
 import 'package:dbpapp/screens/my_style.dart';
 import 'package:flutter/material.dart';
 
-class MainStore extends StatefulWidget {
-  final int index;
-  MainStore({Key key, this.index}) : super(key: key);
+class MyMachine extends StatefulWidget {
   @override
-  _MainStoreState createState() => _MainStoreState();
+  _MyMachineState createState() => _MyMachineState();
 }
 
-class _MainStoreState extends State<MainStore> {
-  // Explicit
+class _MyMachineState extends State<MyMachine> {
+  
+// Explicit
   List<String> iconMaterials = [
     'images/matcenter.png',
     'images/matelect.png',
@@ -28,18 +27,12 @@ class _MainStoreState extends State<MainStore> {
     'images/his2.png'
   ];
 
-  int indexMaterial = 0;
+  int indexMaterial = 2;
 
-  // Method
-  @override
-  void initState() { 
-    super.initState();
-    setState(() {
-      indexMaterial = widget.index;
-    });
-  }
 
-  Widget cardMenu1() {
+  // MethodCall
+
+   Widget cardMenu1() {
     return Card(
       child: ListTile(
         leading: Container(
@@ -95,7 +88,6 @@ class _MainStoreState extends State<MainStore> {
       ),
     );
   }
-
   Widget content() {
     return Container(
       padding: EdgeInsets.only(
@@ -120,12 +112,13 @@ class _MainStoreState extends State<MainStore> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         gradient: RadialGradient(
-          colors: [Colors.white, MyStyle().mainColor],
+          colors: [Colors.white, Colors.green.shade600],
           radius: 1.5,
           center: Alignment.topCenter,
         ),
@@ -137,4 +130,5 @@ class _MainStoreState extends State<MainStore> {
       ),
     );
   }
+
 }

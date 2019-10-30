@@ -1,14 +1,14 @@
 import 'package:dbpapp/screens/my_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class MainStore extends StatefulWidget {
-  final int index;
-  MainStore({Key key, this.index}) : super(key: key);
+class MyMaterial extends StatefulWidget {
   @override
-  _MainStoreState createState() => _MainStoreState();
+  _MyMaterialState createState() => _MyMaterialState();
 }
 
-class _MainStoreState extends State<MainStore> {
+class _MyMaterialState extends State<MyMaterial> {
+
   // Explicit
   List<String> iconMaterials = [
     'images/matcenter.png',
@@ -30,16 +30,10 @@ class _MainStoreState extends State<MainStore> {
 
   int indexMaterial = 0;
 
-  // Method
-  @override
-  void initState() { 
-    super.initState();
-    setState(() {
-      indexMaterial = widget.index;
-    });
-  }
 
-  Widget cardMenu1() {
+  // MethodCall
+
+   Widget cardMenu1() {
     return Card(
       child: ListTile(
         leading: Container(
@@ -95,7 +89,6 @@ class _MainStoreState extends State<MainStore> {
       ),
     );
   }
-
   Widget content() {
     return Container(
       padding: EdgeInsets.only(
@@ -119,6 +112,7 @@ class _MainStoreState extends State<MainStore> {
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
