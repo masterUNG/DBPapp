@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dbpapp/models/equipment_model.dart';
 import 'package:dbpapp/screens/my_style.dart';
+import 'package:dbpapp/screens/show_detail_material.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -76,13 +77,22 @@ class _SearchViewMaterialState extends State<SearchViewMaterial> {
       child: ListView.builder(
         itemCount: filterEquipmentModels.length,
         itemBuilder: (BuildContext context, int index) {
-          return Card(
-                      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                showName(index),
-                showTotal(index),
-              ],
+          return GestureDetector(
+            child: Card(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  showName(index),
+                  showTotal(index),
+                ],
+              ),
             ),
+            onTap: () {
+              print('You Click ${filterEquipmentModels[index].name}');
+              MaterialPageRoute materialPageRoute = MaterialPageRoute(
+                  builder: (BuildContext context) => ShowDetailMaterial(equipmentModel: filterEquipmentModels[index],));
+              Navigator.of(context).push(materialPageRoute);
+            },
           );
         },
       ),
@@ -90,11 +100,19 @@ class _SearchViewMaterialState extends State<SearchViewMaterial> {
   }
 
   Widget showName(int index) {
-    return Text(filterEquipmentModels[index].name, style: TextStyle(fontSize: MyStyle().h2,),);
+    return Text(
+      filterEquipmentModels[index].name,
+      style: TextStyle(
+        fontSize: MyStyle().h2,
+      ),
+    );
   }
 
   Widget showTotal(int index) {
-    return Text(filterEquipmentModels[index].total, style: TextStyle(fontSize: MyStyle().h1),);
+    return Text(
+      filterEquipmentModels[index].total,
+      style: TextStyle(fontSize: MyStyle().h1),
+    );
   }
 
   @override
