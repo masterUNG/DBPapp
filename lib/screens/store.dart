@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dbpapp/models/user_account_model.dart';
 import 'package:dbpapp/models/user_model.dart';
+import 'package:dbpapp/screens/home.dart';
 import 'package:dbpapp/screens/main_store.dart';
 import 'package:dbpapp/screens/my_electric.dart';
 import 'package:dbpapp/screens/my_machine.dart';
@@ -9,6 +10,7 @@ import 'package:dbpapp/screens/my_material.dart';
 import 'package:dbpapp/screens/my_style.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Store extends StatefulWidget {
   final UserAccountModel userAccountModel;
@@ -141,9 +143,50 @@ class _StoreState extends State<Store> {
     }
   }
 
+  Widget spcialButton() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        iconChangePassword(),
+        iconLogOut(),
+      ],
+    );
+  }
+
+  Widget iconLogOut() {
+    return IconButton(tooltip: 'Log Out',
+      icon: Icon(
+        Icons.exit_to_app,
+        color: Colors.white,
+        size: 36.0,
+      ),
+      onPressed: () {processLogOut();},
+    );
+  }
+
+  Future<void> processLogOut()async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.clear();
+
+    MaterialPageRoute materialPageRoute = MaterialPageRoute(builder: (BuildContext context)=>Home());
+    Navigator.of(context).pushAndRemoveUntil(materialPageRoute, (Route<dynamic> route)=>false);
+
+  }
+
+  Widget iconChangePassword() {
+    return IconButton(tooltip: 'Change Password',
+      icon: Icon(
+        Icons.lock,
+        color: Colors.white,
+        size: 36.0,
+      ),
+      onPressed: () {},
+    );
+  }
+
   Widget showLogin() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text(
           'Login by $loginString',
@@ -152,6 +195,7 @@ class _StoreState extends State<Store> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        spcialButton(),
       ],
     );
   }
@@ -161,8 +205,8 @@ class _StoreState extends State<Store> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Container(
-          width: 100.0,
-          height: 100.0,
+          width: 80.0,
+          height: 80.0,
           child: Image.asset('images/avatar.png'),
         ),
       ],
@@ -197,9 +241,9 @@ class _StoreState extends State<Store> {
           Divider(),
           menuMachineStore(),
           Divider(),
-          menuPasswordStore(),
-          Divider(),
-          menuLogOutStore(),
+          // menuPasswordStore(),
+          // Divider(),
+          // menuLogOutStore(),
         ],
       ),
     );
@@ -208,7 +252,8 @@ class _StoreState extends State<Store> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: MyStyle().textColor,
+      appBar: AppBar(
+        backgroundColor: MyStyle().textColor,
         title: Text(titleAppBars[indexTitleAppBar]),
       ),
       body: currentWidget,

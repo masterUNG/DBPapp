@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:dbpapp/models/equipment_model.dart';
+import 'package:dbpapp/models/user_account_model.dart';
 import 'package:dbpapp/screens/my_style.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ShowDetailMaterial extends StatefulWidget {
   final EquipmentModel equipmentModel;
@@ -12,6 +17,7 @@ class ShowDetailMaterial extends StatefulWidget {
 class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
   // Explicit
   EquipmentModel myEquipmentModel;
+  String userString, levelString = '';
 
   // Method
   @override
@@ -19,7 +25,28 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
     super.initState();
     setState(() {
       myEquipmentModel = widget.equipmentModel;
+      findUser();
     });
+  }
+
+  Future findUser() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    userString = sharedPreferences.getString('User');
+    print('userString = $userString');
+    findLevel();
+  }
+
+  Future findLevel() async {
+    String url = '${MyStyle().urlGetUserWhereUser}$userString';
+    Response response = await get(url);
+    var result = json.decode(response.body);
+    print('result = $result');
+    for (var map in result) {
+      UserAccountModel userAccountModel = UserAccountModel.fromJSON(map);
+      setState(() {
+        levelString = userAccountModel.level;
+      });
+    }
   }
 
   Widget showName() {
@@ -64,10 +91,14 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
   }
 
   Widget showButton() {
-    return Column(mainAxisAlignment: MainAxisAlignment.end,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         Row(
-          children: <Widget>[increaseButton(), decreaseButton(),],
+          children: <Widget>[
+            increaseButton(),
+            decreaseButton(),
+          ],
         ),
       ],
     );
@@ -75,9 +106,16 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
 
   Widget increaseButton() {
     return Expanded(
-          child: RaisedButton.icon(color: Colors.green.shade800,
-        icon: Icon(Icons.add, color: Colors.white,),
-        label: Text('เพิ่ม', style: TextStyle(color: Colors.white),),
+      child: RaisedButton.icon(
+        color: Colors.green.shade800,
+        icon: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        label: Text(
+          'เพิ่ม',
+          style: TextStyle(color: Colors.white),
+        ),
         onPressed: () {},
       ),
     );
@@ -85,9 +123,16 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
 
   Widget decreaseButton() {
     return Expanded(
-          child: RaisedButton.icon(color: Colors.red.shade800,
-        icon: Icon(Icons.remove, color: Colors.white,),
-        label: Text('ลด', style: TextStyle(color: Colors.white),),
+      child: RaisedButton.icon(
+        color: Colors.red.shade800,
+        icon: Icon(
+          Icons.remove,
+          color: Colors.white,
+        ),
+        label: Text(
+          'ลด',
+          style: TextStyle(color: Colors.white),
+        ),
         onPressed: () {},
       ),
     );
@@ -112,7 +157,7 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
                 showTotal(),
               ],
             ),
-          ),showButton(),
+          ), levelString == '1' ? showButton(): SizedBox(),
         ],
       ),
     );
