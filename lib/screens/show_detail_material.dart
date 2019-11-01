@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:dbpapp/models/equipment_model.dart';
 import 'package:dbpapp/models/user_account_model.dart';
 import 'package:dbpapp/screens/my_dialog.dart';
+import 'package:dbpapp/screens/my_material.dart';
 import 'package:dbpapp/screens/my_style.dart';
+import 'package:dbpapp/screens/search_view_material.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -234,25 +236,33 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
           formKey.currentState.save();
           print('number = $numberString, name = $nameString, index = $index');
           if (index == 0) {
-            increaseProcess();
+            increaseAnDecreaseProcess('0');
             Navigator.of(context).pop();
           } else {
-            decreaseProcess();
             Navigator.of(context).pop();
+            decreaseProcess();
           }
         }
       },
     );
   }
 
-  Future<void> increaseProcess()async{
+  Future<void> increaseAnDecreaseProcess(String process) async {
     String ideq = myEquipmentModel.idEq;
     String totalString = myEquipmentModel.total;
     int totalAInt = int.parse(totalString);
     int numberAInt = int.parse(numberString);
-    totalAInt = totalAInt + numberAInt;
 
-    String url = 'https://www.androidthai.in.th/boss/editEquipmentWhereIdMaster.php?isAdd=true&id_eq=$ideq&total=$totalAInt';  
+    if (process == '0') {
+      totalAInt = totalAInt + numberAInt;
+    } else {
+      totalAInt = totalAInt - numberAInt;
+    }
+
+    
+
+    String url =
+        'https://www.androidthai.in.th/boss/editEquipmentWhereIdMaster.php?isAdd=true&id_eq=$ideq&total=$totalAInt';
 
     Response response = await get(url);
     var result = json.decode(response.body);
@@ -265,11 +275,9 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
     } else {
       normalAlert(context, 'Have Error', 'Please Try Again');
     }
-
   }
 
-  Future<void> insertReport(String process, int totalAInt)async{
-
+  Future<void> insertReport(String process, int totalAInt) async {
     String key = myEquipmentModel.key;
     String group = myEquipmentModel.group;
     String type = myEquipmentModel.type;
@@ -277,23 +285,41 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
     String total = '${myEquipmentModel.total} -> $totalAInt';
     String myProcess = process;
 
-    String url = 'https://www.androidthai.in.th/boss/addReportMaster.php?isAdd=true&key_re=$key&user_re=$nameString&group_re=$group&type_re=$type&unit_re=$unit&total_re=$total&process_re=$myProcess';
+    String url =
+        'https://www.androidthai.in.th/boss/addReportMaster.php?isAdd=true&key_re=$key&user_re=$nameString&group_re=$group&type_re=$type&unit_re=$unit&total_re=$total&process_re=$myProcess';
 
     Response response = await get(url);
     var result = json.decode(response.body);
+    print('result of addReport ==> $result');
     if (result.toString() == 'true') {
-      Navigator.of(context).pop();
+      MaterialPageRoute materialPageRoute = MaterialPageRoute(
+          builder: (BuildContext context) => MyMaterial());
+      Navigator.of(context).pushAndRemoveUntil(
+          materialPageRoute, (Route<dynamic> route) => false);
     } else {
       normalAlert(context, 'Error', 'Please Try again');
     }
-
   }
 
-  Future<void> decreaseProcess()async{}
+  Future<void> decreaseProcess() async {
+    String currentTotal = myEquipmentModel.total;
+    int currentTotalAInt = int.parse(currentTotal);
+    int numberDecrease = int.parse(numberString);
 
-  
+    if (numberDecrease > currentTotalAInt) {
+      normalAlert(context, 'Cannot Decrease', 'Because More Stock');
+    } else {
+      int totalAInt = currentTotalAInt - numberDecrease;
+      String limitString = myEquipmentModel.limit;
+      int limitAInt = int.parse(limitString);
 
-  
+      if (totalAInt <= limitAInt) {
+        // Call Line API
+      }
+      increaseAnDecreaseProcess('1');
+      insertReport('1', totalAInt);
+    }
+  }
 
   void showAlert(int index) {
     showDialog(

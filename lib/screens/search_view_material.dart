@@ -72,6 +72,11 @@ class _SearchViewMaterialState extends State<SearchViewMaterial> {
     );
   }
 
+  Future<void> getRequests()async{
+    print('getRequest Work');
+    readAllData();
+  }
+
   Widget showListView() {
     return Expanded(
       child: ListView.builder(
@@ -91,7 +96,7 @@ class _SearchViewMaterialState extends State<SearchViewMaterial> {
               print('You Click ${filterEquipmentModels[index].name}');
               MaterialPageRoute materialPageRoute = MaterialPageRoute(
                   builder: (BuildContext context) => ShowDetailMaterial(equipmentModel: filterEquipmentModels[index],));
-              Navigator.of(context).push(materialPageRoute);
+              Navigator.of(context).push(materialPageRoute).then((value)=>value? getRequests():null);
             },
           );
         },
