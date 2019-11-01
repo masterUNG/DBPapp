@@ -6,6 +6,7 @@ import 'package:dbpapp/screens/my_dialog.dart';
 import 'package:dbpapp/screens/my_material.dart';
 import 'package:dbpapp/screens/my_style.dart';
 import 'package:dbpapp/screens/search_view_material.dart';
+import 'package:dbpapp/screens/store.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +23,7 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
   EquipmentModel myEquipmentModel;
   String userString, levelString = '', numberString, nameString;
   final formKey = GlobalKey<FormState>();
+  UserAccountModel userAccountModel;
 
   // Method
   @override
@@ -46,7 +48,7 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
     var result = json.decode(response.body);
     print('result = $result');
     for (var map in result) {
-      UserAccountModel userAccountModel = UserAccountModel.fromJSON(map);
+      userAccountModel = UserAccountModel.fromJSON(map);
       setState(() {
         levelString = userAccountModel.level;
       });
@@ -259,8 +261,6 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
       totalAInt = totalAInt - numberAInt;
     }
 
-    
-
     String url =
         'https://www.androidthai.in.th/boss/editEquipmentWhereIdMaster.php?isAdd=true&id_eq=$ideq&total=$totalAInt';
 
@@ -293,7 +293,9 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
     print('result of addReport ==> $result');
     if (result.toString() == 'true') {
       MaterialPageRoute materialPageRoute = MaterialPageRoute(
-          builder: (BuildContext context) => MyMaterial());
+          builder: (BuildContext context) => Store(
+                userAccountModel: userAccountModel,
+              ));
       Navigator.of(context).pushAndRemoveUntil(
           materialPageRoute, (Route<dynamic> route) => false);
     } else {
@@ -315,10 +317,31 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
 
       if (totalAInt <= limitAInt) {
         // Call Line API
+        callLineAPI();
       }
       increaseAnDecreaseProcess('1');
       insertReport('1', totalAInt);
     }
+  }
+
+  Future<void> callLineAPI() async {
+    String message =
+        'ชื่อ ${myEquipmentModel.name} กลุ่ม ${myEquipmentModel.group} ประเภท ${myEquipmentModel.type}';
+    String url = 'https://notify-api.line.me/api/notify?message=$message';
+    Map<String, String> headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Bearer s1mg5tgZjQICeHgjLSzGbG39kLbVAsDbTilYurdZ2W4"
+    };
+    String body = '{"message": "testMaster"}';
+    // var body = json.encode({"message": "testMaster"});
+    // Map<String, dynamic> body;
+    // body['message'] = 'testMaster';
+
+    Response response = await post(url, headers: headers, body: null);
+    int statusCode = response.statusCode;
+    print('statusCode = $statusCode');
+    String result = response.body;
+    print('result = $result');
   }
 
   void showAlert(int index) {
@@ -341,12 +364,22 @@ class _ShowDetailMaterialState extends State<ShowDetailMaterial> {
         });
   }
 
+  Widget testLine() {
+    return IconButton(
+      icon: Icon(Icons.android),
+      onPressed: () {
+        callLineAPI();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
+        // actions: <Widget>[testLine()],
         title: Text('แสดงรายละเอียด คลังกลาง'),
       ),
       body: Stack(
